@@ -1,0 +1,17 @@
+---
+spring:
+  profiles: default
+  application:
+    name: QuizApplication
+  data:
+    mongodb:
+      dbName: quizmaster
+      host: localhost
+      port: 27017
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
