@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface QuestionsRepository extends MongoRepository<Questions, Integer> {
 
-    @Query
-    List<Quizzes> findByQuizId(Integer quizId);
+    @Query("{'_id.quizId': ?0}")
+    List<Questions> findAllByQuizId(Integer quizId);
 
 }

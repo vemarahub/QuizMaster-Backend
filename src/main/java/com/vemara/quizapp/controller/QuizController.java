@@ -37,8 +37,8 @@ public class QuizController {
 	}
 
 	@GetMapping("/quizzes/{quizId}")
-	public QuizDTO getQuizById(@PathVariable Long quizId) {
-		return quizService.getQuizById(quizId);
+	public List<QuestionsDTO> getQuizById(@PathVariable Integer quizId) {
+		return questionService.getQuizById(quizId);
 	}
 
 	@GetMapping("/quizzes")

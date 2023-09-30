@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -27,12 +29,18 @@ public class QuizService {
         return true;
     }
 
-    public QuizDTO getQuizById(Long quizId) {
-        return null;
-    }
-
     public List<QuizDTO> getAllQuizzes() {
-        return null;
+        List<QuizDTO> quizDTOS = new ArrayList<>();
+        List<Quizzes> quizzesList = quizRepository.findAll();
+        if (!CollectionUtils.isEmpty(quizzesList)) {
+            for (Quizzes quizzes : quizzesList) {
+                QuizDTO quizDTO = QuizDTO.builder().quizId(quizzes.getId())
+                        .description(quizzes.getDescription())
+                        .title(quizzes.getTitle()).build();
+                quizDTOS.add(quizDTO);
+            }
+        }
+        return quizDTOS;
     }
 
     public QuizDTO updateQuiz(Long quizId, QuizDTO quiz) {
