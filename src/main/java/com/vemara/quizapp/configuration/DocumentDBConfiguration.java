@@ -34,6 +34,7 @@ public class DocumentDBConfiguration extends AbstractMongoClientConfiguration {
 	private String database;
 	private int port;
 	private String dbName;
+	private String uri;
 
 	@Autowired
 	private Environment env;
@@ -97,7 +98,11 @@ public class DocumentDBConfiguration extends AbstractMongoClientConfiguration {
 		final var METHODNAME = "mongoClient";
 		LOGGER.entering(CLASSNAME, METHODNAME);
 		LOGGER.exiting(CLASSNAME, METHODNAME);
-		return MongoClients.create(getConnectionString());
+		if(uri!=null) {
+			return MongoClients.create(this.uri);
+		}else{
+			return MongoClients.create(getConnectionString());
+		}
 	}
 
 	/**

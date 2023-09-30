@@ -1,51 +1,94 @@
 package com.vemara.quizapp.controller;
 
-import com.vemara.quizapp.constants.QuizConstants;
+import com.vemara.quizapp.objects.QuestionsDTO;
+import com.vemara.quizapp.objects.QuizDTO;
+import com.vemara.quizapp.objects.UserDTO;
+import com.vemara.quizapp.objects.UserResponseDTO;
+import com.vemara.quizapp.service.QuestionService;
 import com.vemara.quizapp.service.QuizService;
-import org.springframework.http.CacheControl;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import com.vemara.quizapp.service.UserResponseService;
+import com.vemara.quizapp.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.logging.Logger;
-
 
 @RestController
+@RequestMapping("/quizmaster")
 public class QuizController {
 
-
-	private static final String CLASSNAME = QuizController.class.getName();
-	private static final Logger LOGGER = Logger.getLogger(CLASSNAME);
-
+	@Autowired
 	private QuizService quizService;
 
-	public QuizController(QuizService storeConfigService) {
-		this.quizService = storeConfigService;
+	@Autowired
+	private QuestionService questionService;
+
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private UserResponseService userResponseService;
+
+	// Quizzes API Endpoints
+
+	@PostMapping("/createQuiz")
+	public Boolean createQuiz(@RequestBody QuizDTO quiz) {
+		return quizService.createQuiz(quiz);
 	}
 
-
-
-	@GetMapping(value = {QuizConstants.REVIEW_PATH}, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<String>> getQuizes(
-			@PathVariable(value = "productId", required = true) String productId) {
-
-		List<String> response = null/*quizService.get(productId)*/;
-
-		return ResponseEntity.status(HttpStatus.OK).cacheControl(CacheControl.noCache()).body(response);
+	@GetMapping("/quizzes/{quizId}")
+	public QuizDTO getQuizById(@PathVariable Long quizId) {
+		return quizService.getQuizById(quizId);
 	}
 
-
-	@PostMapping(value = QuizConstants.REVIEW_PATH)
-	public ResponseEntity<String> createQuizes(
-			@PathVariable(value = "productId", required = true) String productId,
-			@RequestBody(required = true) String review) {
-		String response = /*quizService.createReview(review,productId);*/null;
-		return ResponseEntity.status(HttpStatus.OK).cacheControl(CacheControl.noCache()).body(response);
-
-
+	@GetMapping("/quizzes")
+	public List<QuizDTO> getAllQuizzes() {
+		return quizService.getAllQuizzes();
 	}
 
+	@PutMapping("/quizzes/{quizId}")
+	public QuizDTO updateQuiz(@PathVariable Long quizId, @RequestBody QuizDTO quiz) {
+		return quizService.updateQuiz(quizId, quiz);
+	}
 
+	@DeleteMapping("/quizzes/{quizId}")
+	public void deleteQuiz(@PathVariable Long quizId) {
+		quizService.deleteQuiz(quizId);
+	}
+
+	// Questions API Endpoints
+
+	@PostMapping("/createQuestions")
+	public Boolean createQuestion(@RequestBody List<QuestionsDTO> questionsDTOSs) {
+		return questionService.createQuestions(questionsDTOSs);
+	}
+
+	@GetMapping("/questions/{questionId}")
+	public QuestionsDTO getQuestionById(@PathVariable Long questionId) {
+		return questionService.getQuestionById(questionId);
+	}
+
+	// Users API Endpoints
+
+	@PostMapping("/users")
+	public UserDTO createUser(@RequestBody UserDTO user) {
+		return userService.createUser(user);
+	}
+
+	@GetMapping("/users/{userId}")
+	public UserDTO getUserById(@PathVariable String userId) {
+		return userService.getUserById(userId);
+	}
+
+	// User Responses API Endpoints
+
+	@PostMapping("/user-responses")
+	public UserResponseDTO submitUserResponse(@RequestBody UserResponseDTO userResponse) {
+		return userResponseService.submitUserResponse(userResponse);
+	}
+
+	@GetMapping("/user-responses/{responseId}")
+	public UserResponseDTO getUserResponseById(@PathVariable Long responseId) {
+		return userResponseService.getUserResponseById(responseId);
+	}
 }
